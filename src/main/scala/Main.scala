@@ -15,7 +15,7 @@ object Main extends App {
   println("")
 
   println("--- Zoo Example way ---")
-  val browseProducts = new BrowseProducts()
+  val browseProducts = new BrowseProducts[Motherboard]()
   println(browseProducts.goNext)
   println(browseProducts.goNext)
   println(browseProducts.goNext)

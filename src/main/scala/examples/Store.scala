@@ -1,5 +1,6 @@
 package examples
 
+import scala.reflect.ClassTag
 import scala.util.Try
 
 object Store {
@@ -32,9 +33,27 @@ object Store {
     case class NoMoreProductsToBrowse()
     case class NextProduct(product: Product)
   }
-  class BrowseProducts(param:Any) {
+
+  class BrowseProducts[TypeOfProduct<: Product : ClassTag]() {
     import BrowseProducts._
-    val steps: Iterator[Product] = products.iterator
+
+    val temp: Seq[TypeOfProduct] = products.collect {
+      case p:TypeOfProduct => p
+    }
+
+    val steps: Iterator[TypeOfProduct] = temp.iterator
+
+
+    val motherboard: Seq[Product] = products.filter {
+      case GPU(name, price, isAvailable) => false
+      case Motherboard(name, price, isAvailable) => true
+      case Processor(name, price, isAvailable) => false
+      case _ => false
+    }
+
+    val processor: Seq[Processor] = products.collect {
+      case p:Processor => p
+    }
 
     def goNext: Either[NoMoreProductsToBrowse, NextProduct] = Try {
       steps.next()
